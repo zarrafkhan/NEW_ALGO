@@ -1,19 +1,16 @@
 import java.net.*;
-import java.util.ArrayList;
 import java.io.*;  
 
-class MyClient{  
+class NewClient{  
 	public static void main(String args[])throws Exception{  
 
 		String mess = ""; //last message
-		String[] minfo;   //specfic information from last message
-
-		String[] first;
+        String[] minfo;   //specfic information from last message
+        
+		String[] first;   
 		String jobID = ""; 
-		ArrayList<String[]> data = new ArrayList<String[]>();
-        String[] recs;
-        String[] recsC;
-		ArrayList<Integer> dlist = new ArrayList<Integer>();
+        String[] recs; //nRecs for gets available
+        String[] recsC;//nRecs for gets Capable
 		boolean a = true;
 
 		try{
@@ -32,20 +29,22 @@ class MyClient{
 			dout.write(("REDY\n").getBytes());      
 			mess = bin.readLine(); //recieves jobn first           
 
+        //exits infinite loop if client recieves NONE 
 		while(a){
 
              if(mess.startsWith("JOBN")){
 
+                //Refresh values for new job
 				minfo = mess.split(" "); 
-			    jobID = minfo[2];
-				//Sends GETS Available Core/Memory/Disk
-				
+                jobID = minfo[2];
+                
+			   //Sends GETS Avail Core Memory Disk
 			   dout.write(("GETS Avail " + minfo[4] + " " + minfo[5] + " " + minfo[6] + " \n").getBytes()); 
 			   recs = bin.readLine().split(" "); //DATA nRecs Size
 			   int nRecs = Integer.parseInt(recs[1]); 
                dout.write(("OK\n").getBytes()); 
                
-               //No available servers, go to first capable
+               //No available servers, go to first capable 
                if (Integer.parseInt(recs[1]) == 0){
                    bin.readLine();
                    dout.write(("OK\n").getBytes());
@@ -58,7 +57,7 @@ class MyClient{
                    dout.write(("OK\n").getBytes()); 
                }
 
-                 //stores all data into data
+                 //only store the first record and skip the rest
                  first = bin.readLine().split(" ");
 				 for (int i = 0;i<nRecs -1;i++){
                     bin.readLine();
@@ -66,9 +65,7 @@ class MyClient{
 
                dout.write(("OK\n").getBytes());  
                bin.readLine(); 
-
-			   data.clear();
-			   dlist.clear();
+               //SCHD jobID server_name server_id
                dout.write(("SCHD " + jobID + " " + first[0] + " " + first[1] + "\n").getBytes());  
                bin.readLine();
               
@@ -76,9 +73,9 @@ class MyClient{
                mess = bin.readLine();   //next message
 			}  
 			
-			 if(mess.startsWith("JCPL")){
+			 if(mess.startsWith("JCPL")){ //skip job completion msg
 				dout.write(("REDY\n").getBytes()); 
-				mess = bin.readLine(); //recieves jobn first           
+				mess = bin.readLine();           
 			}
 
 			if(mess.startsWith("NONE")){
