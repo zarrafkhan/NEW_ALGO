@@ -1,4 +1,5 @@
 import java.net.*;
+import java.util.ArrayList;
 import java.io.*;  
 
 class MyClient{  
@@ -10,6 +11,7 @@ class MyClient{
 		String[] first;
 		String[] line;
 		String jobID = ""; 
+		ArrayList<String[]> data = new ArrayList<String[]>();
 		String[] recs; 
 		boolean a = true;
 
@@ -42,11 +44,16 @@ class MyClient{
 			   int nRecs = Integer.parseInt(recs[1]); 
 			   dout.write(("OK\n").getBytes()); 
 
-                 //only store first entry and skip the rest 
-                 first = bin.readLine().split(" ");
-				 for (int i = 0;i<nRecs -1;i++){
-					bin.readLine();
+				 //stores all data into data
+				 for (int i = 0;i<nRecs;i++){
+					line = bin.readLine().split(" ");
+
+					if (!(line[2].startsWith("booting"))){ //**** better fc
+						data.add(line);
+					}
 				 }
+			   first = data.get(0);
+			   data.clear(); //erases all data for next job
 
                dout.write(("OK\n").getBytes());  
                bin.readLine(); 
