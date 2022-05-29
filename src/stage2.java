@@ -13,7 +13,6 @@ class MyClient{
 		String[] line;
 		String jobID = ""; 
 		ArrayList<String[]> data = new ArrayList<String[]>();
-		ArrayList<String[]> boot = new ArrayList<String[]>();
 		String[] recs; 
 		ArrayList<Integer> dlist = new ArrayList<Integer>();
 		boolean a = true;
@@ -56,42 +55,16 @@ class MyClient{
 					 int jcore = Integer.parseInt(minfo[4]); //required core for job
 					 dlist.add(dcore-jcore);
 					 
-
-					//  if ((dcore >= jcore)){
-					// 	 data.add(line);
-					//  }
-
-
-					// if ((line[2].startsWith("booting"))){ //**** better fc
-					// 	boot.add(line);
-					// }
-					// if ((line[2].startsWith("active ")))
-					// data.add(line);
 				 }
 				 Integer max_diff = Collections.max(dlist);
 				 int inx = dlist.indexOf(max_diff);
 				 first = data.get(inx);
 
 
-			   //first = data.get(0);
                dout.write(("OK\n").getBytes());  
                bin.readLine(); 
 
-			   if (boot.size() >= 1){
-				   for(String[] str: boot){
-					   //LSTJ process
-					   dout.write(("LSTJ " + str[0] + " " + str[1] + "\n").getBytes()); 
-					   recs = bin.readLine().split(" "); //DATA nRecs Size
-			           nRecs = Integer.parseInt(recs[1]); 
-					   dout.write(("OK\n").getBytes());
-					   for (int i = 0;i<nRecs;i++){
-						   bin.readLine();
-					   }
-				   }
-			   }
-
 			   data.clear();
-			   boot.clear();
 			   dlist.clear();
                dout.write(("SCHD " + jobID + " " + first[0] + " " + first[1] + "\n").getBytes());  
                bin.readLine();
