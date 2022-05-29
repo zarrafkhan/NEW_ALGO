@@ -1,6 +1,6 @@
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.io.*;  
 
 class MyClient{  
@@ -10,7 +10,7 @@ class MyClient{
 		String[] minfo;   //specfic information from last message
 
 		String[] first;
-		String[] line;
+		//String[] line;
 		String jobID = ""; 
 		ArrayList<String[]> data = new ArrayList<String[]>();
         String[] recs;
@@ -61,21 +61,19 @@ class MyClient{
                }
 
                  //stores all data into data
-                 //first = bin.readLine().split(" ");
-				 for (int i = 0;i<nRecs;i++){
-					 line = bin.readLine().split(" ");
-					 data.add(line);
+                 first = bin.readLine().split(" ");
+				 for (int i = 0;i<nRecs -1;i++){
+					//  line = bin.readLine().split(" ");
+					//  data.add(line);
 
-					 int dcore = Integer.parseInt(line[4]); //server state core
-					 int jcore = Integer.parseInt(minfo[4]); //required core for job
-                     dlist.add(dcore-jcore);
-                    //bin.readLine();
+					//  int dcore = Integer.parseInt(line[4]); //server state core
+					//  int jcore = Integer.parseInt(minfo[4]); //required core for job
+                    //  dlist.add(dcore-jcore);
+                    bin.readLine();
 				 }
-				 Integer max_diff = Collections.max(dlist);
-				 int inx = dlist.indexOf(max_diff);
-				 first = data.get(inx);
-
-               //first = data.get(0); //can remove
+				//  Integer max_diff = Collections.max(dlist);
+				//  int inx = dlist.indexOf(max_diff);
+				//  first = data.get(inx);
 
                dout.write(("OK\n").getBytes());  
                bin.readLine(); 
