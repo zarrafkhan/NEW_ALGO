@@ -13,7 +13,8 @@ class MyClient{
 		String[] line;
 		String jobID = ""; 
 		ArrayList<String[]> data = new ArrayList<String[]>();
-		String[] recs; 
+        String[] recs;
+        String[] recsC;
 		ArrayList<Integer> dlist = new ArrayList<Integer>();
 		boolean a = true;
 
@@ -39,27 +40,42 @@ class MyClient{
 
 				minfo = mess.split(" "); 
 			    jobID = minfo[2];
-				//Sends GETS Capable Core/Memory/Disk
+				//Sends GETS Available Core/Memory/Disk
 				
-			   dout.write(("GETS Capable " + minfo[4] + " " + minfo[5] + " " + minfo[6] + " \n").getBytes()); 
+			   dout.write(("GETS Avail " + minfo[4] + " " + minfo[5] + " " + minfo[6] + " \n").getBytes()); 
 			   recs = bin.readLine().split(" "); //DATA nRecs Size
 			   int nRecs = Integer.parseInt(recs[1]); 
-			   dout.write(("OK\n").getBytes()); 
+               dout.write(("OK\n").getBytes()); 
+               
+               //No available servers, go to first capable
+               if (Integer.parseInt(recs[1]) == 0){
+                   bin.readLine();
+                   dout.write(("OK\n").getBytes());
+                   bin.readLine();
+                   bin.readLine();
 
-				 //stores all data into data
+                   dout.write(("GETS Capable " + minfo[4] + " " + minfo[5] + " " + minfo[6] + " \n").getBytes());
+                   recsC = bin.readLine().split(" "); //DATA nRecs Size
+                   nRecs = Integer.parseInt(recsC[1]); 
+                   dout.write(("OK\n").getBytes()); 
+               }
+
+                 //stores all data into data
+                 //first = bin.readLine().split(" ");
 				 for (int i = 0;i<nRecs;i++){
 					 line = bin.readLine().split(" ");
 					 data.add(line);
 
 					 int dcore = Integer.parseInt(line[4]); //server state core
 					 int jcore = Integer.parseInt(minfo[4]); //required core for job
-					 dlist.add(dcore-jcore);
-					 
+                     dlist.add(dcore-jcore);
+                    //bin.readLine();
 				 }
 				 Integer max_diff = Collections.max(dlist);
 				 int inx = dlist.indexOf(max_diff);
 				 first = data.get(inx);
 
+               //first = data.get(0); //can remove
 
                dout.write(("OK\n").getBytes());  
                bin.readLine(); 
